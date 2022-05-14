@@ -1,0 +1,38 @@
+package main
+
+import "fmt"
+
+var aa int = 1
+var bb string = "函数外定义变量  包内可见"
+
+// 函数外不能使用:=
+var (
+	cc string = "使用var定义多个变量，只写一次var"
+	dd int    = 1
+)
+
+func main() {
+	fmt.Println("hello World")
+	variable()
+	fmt.Println(aa, bb, cc, dd)
+}
+
+func variable() {
+	var a int // 先定义名称  再定义类型   例如定义一个变量一般会先想到名字  再想到类型
+	var s string
+	fmt.Println(a, s) // int 的初始值是0  string的初始值时"" 在c语言中值不固定，在java中 不管任何类型初始值都为null
+
+	var b, c int = 4, 5 // 可以一次定义多个变量，变量必须使用，不使用会报错   避免定义无用变量
+
+	var str = "abc" // 可以不定义类型，会自己推断
+
+	fmt.Println(b, c, str)
+
+	var d, e, f = 1, "e变量值", true // 可以同时给不同类型的变量赋值，不能多个变量定义不同的类型并赋初始值  var a int, b int 这样是不行的
+
+	g, h := true, 10 // 初次定义使用:= 推断类型，代替var ,:= 只能在函数内使用，不能在函数外使用
+
+	fmt.Println(d, e, f, g, h)
+
+	fmt.Printf("%d %q", a, s) // %q和%s区别： %q 会打印出"" 对字符串进行包裹
+}
