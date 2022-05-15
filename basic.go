@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+	"math/cmplx"
+)
 
 var aa int = 1
 var bb string = "函数外定义变量  包内可见"
@@ -15,6 +19,10 @@ func main() {
 	fmt.Println("hello World")
 	variable()
 	fmt.Println(aa, bb, cc, dd)
+
+	euler()
+
+	transType()
 }
 
 func variable() {
@@ -35,4 +43,27 @@ func variable() {
 	fmt.Println(d, e, f, g, h)
 
 	fmt.Printf("%d %q", a, s) // %q和%s区别： %q 会打印出"" 对字符串进行包裹
+}
+
+/**
+ * 使用go的复数类型 验证欧拉公式
+**/
+func euler() {
+	//c := 3 + 4i
+	//fmt.Println("欧拉公式验证",cmplx.Abs(c))
+	fmt.Println(cmplx.Pow(math.E, 1i*math.Pi) + 1)
+
+	fmt.Println(cmplx.Exp(1i*math.Pi) + 1) // cmplx.Exp表示E的几次方
+
+}
+
+/**
+ *  类型转换测试
+**/
+func transType() {
+	var a, b int = 3, 4
+	var c int
+	//c = math.Sqrt(a*a+b*b); 这里会报错  math.Sqrt返回值为float，复制给int类型会报错，Sqrt的参数要求为float，使用int会报错
+	c = int(math.Sqrt(float64(a*a + b*b)))
+	fmt.Println(c)
 }
