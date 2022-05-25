@@ -23,6 +23,7 @@ func main() {
 	euler()
 
 	transType()
+	consts()
 }
 
 func variable() {
@@ -61,9 +62,22 @@ func euler() {
  *  类型转换测试
 **/
 func transType() {
-	var a, b int = 3, 4
-	var c int
+	var (
+		a, b int = 3, 4
+		c    int
+	)
 	//c = math.Sqrt(a*a+b*b); 这里会报错  math.Sqrt返回值为float，复制给int类型会报错，Sqrt的参数要求为float，使用int会报错
 	c = int(math.Sqrt(float64(a*a + b*b)))
 	fmt.Println(c)
 }
+
+/**
+ * 常量定义
+ **/
+func consts() {
+	const filename string = "abc"
+	const a, b int = 3, 4
+	fmt.Println(filename, a, c)
+}
+
+
