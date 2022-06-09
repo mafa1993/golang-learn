@@ -32,3 +32,5 @@ func main() {
 func printSlice(s []int) {
 	fmt.Printf("len %d  cap %d \n", len(s), cap(s))
 }
+
+ 
