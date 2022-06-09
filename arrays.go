@@ -70,4 +70,9 @@ func slice() {
 
 	var ab []int
 	fmt.Println(cap(ab))
+
+	s4 := append(s1, 11)
+	s5 := append(s2, 13)
+	fmt.Println("s4,s5", s4, s5) // s4,s5 [3 4 11] [4 11 13]  s4的改变，导致了s5的改变
+	fmt.Println("arr", arr)      // s4的改变导致了 arr的改变
 }
