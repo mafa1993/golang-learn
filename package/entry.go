@@ -1,3 +1,8 @@
+/*
+ * :Date: 2022-06-13 21:11:28
+ * :LastEditTime: 2022-06-16 21:47:53
+ * :Description:
+ */
 package main
 
 import (
@@ -38,4 +43,24 @@ func main() {
 	pRoot.SetVal(200)
 
 	root.Tra()
+
+	myRoot := myTree{&root}
+	myRoot.fore()
+}
+
+// 使用别名，封装tree
+type myTree struct {
+	node *tree.TreeNode
+}
+
+// TreeNode是先遍历的左，又遍历的右，这里改为先遍历右，再遍历左
+func (myNode *myTree) fore() {
+	if myNode == nil || myNode.node == nil {
+		return
+	}
+	right := myTree{myNode.node.Right} // 类型转换为myTree，不软不能调用fore
+	left := myTree{myNode.node.Left}
+	right.fore()
+	left.fore()
+	myNode.node.Print()
 }
