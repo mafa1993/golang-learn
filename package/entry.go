@@ -1,6 +1,6 @@
 /*
  * :Date: 2022-06-13 21:11:28
- * :LastEditTime: 2022-06-16 21:47:53
+ * :LastEditTime: 2022-06-21 20:36:56
  * :Description:
  */
 package main
@@ -43,7 +43,8 @@ func main() {
 	pRoot.SetVal(200)
 
 	root.Tra()
-
+	
+	//使用组合对已有结构体扩展
 	myRoot := myTree{&root}
 	myRoot.fore()
 }
