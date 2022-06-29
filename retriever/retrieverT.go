@@ -15,6 +15,7 @@ import (
 type RetrieverT struct {
 	UserAgent string
 	TimeOut   time.Duration // time.Duration 时间 毫秒
+	Contents  string
 }
 
 // 只要其他类型实现了接口的方法，即实现了接口
@@ -31,4 +32,10 @@ func (r RetrieverT) Get(str string) string {
 		panic(err)
 	}
 	return string(rlt)
+}
+
+func (r RetrieverT) Post(url string, data map[string]string) string {
+	r.Contents = data["contents"]
+	fmt.Println(r.Contents)
+	return "ok"
 }
