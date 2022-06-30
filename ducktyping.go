@@ -7,7 +7,6 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"learn/retriever"
 	re "learn/retriever"
 )
@@ -26,7 +25,7 @@ func main() {
 	fmt.Println(download(r))
 	inspect(r)
 	r = re.RetrieverT{}
-io.ReadWriteCloser
+
 	fmt.Println(11)
 	fmt.Printf("%T %v", r, r) // 查看r里面的内容  retriever.RetrieverT { 0s}
 	//fmt.Println(download(r))
