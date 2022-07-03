@@ -9,7 +9,7 @@ import (
 
 func main() {
 	tryDefer()
-
+	writeFile2("fic.txt")
 	writeFile("fic.txt")
 }
 
@@ -40,5 +40,45 @@ func writeFile(filename string) {
 	for i := 0; i < 20; i++ {
 		fmt.Fprintln(writer, f()) // 将f的返回内容，写入到writer中
 	}
+}
 
+// 演示panc
+func writeFile2(filename string) {
+	file, err := os.OpenFile(filename, os.O_EXCL|os.O_CREATE, 0666)
+	/*
+				 O_RDONLY：只读模式打开文件；
+		O_WRONLY：只写模式打开文件；
+		O_RDWR：读写模式打开文件；
+		O_APPEND：写操作时将数据附加到文件尾部（追加）；
+		O_CREATE：如果不存在将创建一个新文件；
+		O_EXCL：和 O_CREATE 配合使用，文件必须不存在，否则返回一个错误；
+		O_SYNC：当进行一系列写操作时，每次都要等待上次的 I/O 操作完成再进行；
+		O_TRUNC：如果可能，在打开时清空文件
+	*/
+
+	if err != nil {
+		/*  方法一：输出返回
+		fmt.Println(err)
+		return
+		*/
+
+		// 方案二
+		// os.fileopen里面写的，会返回一个*patherror，这里断言判断，如果不是就 退出
+		if pathErr, ok := err.(*os.PathError); !ok {
+			panic(err)
+		} else {
+			fmt.Println(pathErr.Path, pathErr.Err)
+			return
+		}
+
+		// pathErr的作用域在if里，不能在外部使用
+
+		panic(err) // 会导致程序直接挂掉
+	}
+
+	defer file.Close()
+	writer := bufio.NewWriter(file)
+	defer writer.Flush()
+	f := fic.Fic()
+	fmt.Fprintln(writer, f())
 }
