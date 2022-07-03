@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	fic "learn/defererror/Fic"
 	"os"
@@ -61,6 +62,10 @@ func writeFile2(filename string) {
 		fmt.Println(err)
 		return
 		*/
+
+		// 自定义error，也可以实现Error接口
+		error := errors.New("custom error")
+		fmt.Println(error)
 
 		// 方案二
 		// os.fileopen里面写的，会返回一个*patherror，这里断言判断，如果不是就 退出
