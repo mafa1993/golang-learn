@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"learn/package/tree"
 	"strings"
 )
 
@@ -45,6 +46,17 @@ func main() {
 	f2 := ff() // 调用ff以后返回了一个Reader  传给printFile，去循环遍历   ff相当于一个生成器
 	printFile(f2)
 
+	fmt.Println("二叉树回调")
+	var root tree.TreeNode
+	root = tree.TreeNode{Value: 3}
+	root.Left = &tree.TreeNode{}
+	root.Right = &tree.TreeNode{5, nil, nil}
+	var nodeCount int = 0
+	// 传回调，计算树的节点数
+	root.TraverseFunc(func(node *tree.TreeNode) {
+		nodeCount++
+	})
+	fmt.Println(nodeCount)
 }
 
 // 使用函数式编程实现，使用一个函数来作为sum的记录=======
