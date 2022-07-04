@@ -69,3 +69,22 @@ func (node *TreeNode) Tra() {
  * 值接收者是go 特有
  *
 **/
+
+// 改造，传递进来一个函数，执行函数
+func (node *TreeNode) TraverseFunc(f func(*TreeNode)) {
+	if node == nil {
+		return
+	}
+
+	node.Left.TraverseFunc(f) // 为了循环执行下去
+	f(node) // 对传进来的回调进行执行
+	node.Right.TraverseFunc(f)
+
+}
+
+func (node *TreeNode) Tr() {
+	node.TraverseFunc(func(node1 *TreeNode) {
+		node1.Print()
+	})
+	fmt.Println()
+}
