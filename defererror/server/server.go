@@ -82,7 +82,7 @@ func errWrapper(handler appHandler) func(http.ResponseWriter, *http.Request) {
 			code := http.StatusOK
 			if customError, ok := err.(customError); ok {
 				// 调用自定义的Message方法，返回错误信息
-				http.Error(writer, customError.Message(), http.StatusOk)
+				http.Error(writer, customError.Message(), code)
 				return
 			}
 
