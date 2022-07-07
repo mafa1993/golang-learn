@@ -16,13 +16,13 @@ func main() {
 		path = path[len("/list/"):] // 字符串切分，取list/后面的部分
 
 		file, err := os.Open(path)
-		defer file.Close()
 
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusInternalServerError) // 三个参数responsewriter   错误信息  http状态码，err.Error() 会将内部的错误信息暴露出去
 			return
 			//panic(err)
 		}
+		defer file.Close()
 
 		all, err := ioutil.ReadAll(file)
 
@@ -115,11 +115,11 @@ func handleList(writer http.ResponseWriter, request *http.Request) error {
 	path = path[len("/list1/"):] // 字符串切分，取list/后面的部分
 
 	file, err := os.Open(path)
-	defer file.Close()
 
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	all, err := ioutil.ReadAll(file)
 
