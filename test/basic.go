@@ -88,18 +88,19 @@ func calcTriangle(a, b int) int {
 }
 
 func lengthOfNonRepeatingSubStr(s string) int {
-	lastOccurred := make(map[rune]int)
+	//lastOccurred := make(map[rune]int)
+	lastOccurred := make([]int, 0xffff)
 	start := 0
 	maxLength := 0
 
 	for i, ch := range []rune(s) {
-		if lastI, ok := lastOccurred[ch]; ok && lastI >= start {
-			start = lastI + 1
+		if lastI := lastOccurred[ch]; lastI >= start {
+			start = lastI
 		}
 		if i-start+1 > maxLength {
 			maxLength = i - start + 1
 		}
-		lastOccurred[ch] = i
+		lastOccurred[ch] = i + 1
 	}
 
 	return maxLength

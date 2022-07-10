@@ -30,12 +30,29 @@ func TestRepeat(t *testing.T) {
 		{"", 0},
 		{"abbsd", 3},
 		{"我是", 2},
-		{"一二一", 4},
+		{"一二一", 2},
 	}
 
 	for _, v := range data {
 		if rlt := lengthOfNonRepeatingSubStr(v.s); rlt != v.ans {
 			t.Errorf("%s 的结果为%d,应该为 %d", v.s, rlt, v.ans)
+		}
+	}
+}
+
+/**
+ * go 性能测试
+**/
+func BenchmarkSubstr(b *testing.B) {
+	s := "一二一二三四为首的发"
+	ans := 8
+
+	b.ResetTimer();
+	// 进行性能测试的时候，具体计算多少遍系统可以自己决定
+	for i := 0; i <= b.N; i++ {
+		rlt := lengthOfNonRepeatingSubStr(s)
+		if rlt != ans {
+			b.Errorf("测试出错，应该是%d,结果是%d", ans, rlt)
 		}
 	}
 }

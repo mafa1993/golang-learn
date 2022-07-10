@@ -1,0 +1,14 @@
+mode: set
+learn/test/basic.go:18.13,27.2 6 0
+learn/test/basic.go:29.17,47.2 10 0
+learn/test/basic.go:52.14,59.2 2 0
+learn/test/basic.go:64.18,72.2 3 0
+learn/test/basic.go:77.15,81.2 3 0
+learn/test/basic.go:84.33,88.2 3 1
+learn/test/basic.go:90.47,95.31 4 1
+learn/test/basic.go:105.2,105.18 1 1
+learn/test/basic.go:95.31,96.58 1 1
+learn/test/basic.go:99.3,99.28 1 1
+learn/test/basic.go:102.3,102.23 1 1
+learn/test/basic.go:96.58,98.4 1 1
+learn/test/basic.go:99.28,101.4 1 1
