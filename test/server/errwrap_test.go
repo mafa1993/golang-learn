@@ -17,20 +17,20 @@ import (
  * 本身测试的函数，入参为appHandler
  * 从response中获取code 和body进行对比查看是否正确
 **/
+var tests = []struct {
+	h       appHandler
+	code    int
+	message string
+}{
+	{errPanic, 500, "Internal Server Error"},
+	{errUserError, 400, "custom error trigger"},
+	{errNotFound, 404, "Not Found"},
+	{errPermisson, 403, "Forbidden"},
+	{errDefault, 500, "Internal Server Error"},
+	//	{errNIl, 200, "no error"},
+}
 
 func Test_errwra(t *testing.T) {
-	tests := []struct {
-		h       appHandler
-		code    int
-		message string
-	}{
-		{errPanic, 500, "Internal Server Error"},
-		{errUserError, 400, "custom error trigger"},
-		{errNotFound, 404, "Not Found"},
-		{errPermisson, 403, "Forbidden"},
-		{errDefault, 500, "Internal Server Error"},
-		{errNIl, 200, "no error"},
-	}
 
 	for _, v := range tests {
 		rlt := errWrapper(v.h) // rlt为一个函数，入参为responseWriter和request
@@ -92,4 +92,25 @@ func errDefault(writer http.ResponseWriter, request *http.Request) error {
 // 其他类型
 func errNIl(writer http.ResponseWriter, request *http.Request) error {
 	return nil
+}
+
+// ============对http 服务进行测试
+func TestServer(t *testing.T) {
+	// httptest.NewServer() 需要传递一个handler
+	// 我们这个的handler就是errWrapper
+	for _, v := range tests {
+		handler := errWrapper(v.h)
+
+		server := httptest.NewServer(http.HandlerFunc(handler)) // http.HandlerFunc 将 func转换成http.Handler接口类型
+
+		res, _ := http.Get(server.URL) // 建立客户端调用
+
+		body, _ := ioutil.ReadAll(res.Body) // 读取所有的response.body 返回类型为byte
+
+		body_str := strings.Trim(string(body), "\n")
+		if res.StatusCode != v.code || body_str != v.message {
+			t.Errorf("期望的code为%d,得到的是%d", v.code, res.StatusCode)
+			t.Errorf("期望的内容为  %s,得到的是%s", v.message, body_str)
+		}
+	}
 }
