@@ -10,15 +10,23 @@ func main() {
 	var c1, c2 chan int = generator(), generator()
 	work := createWorker(0)
 	// c1,c2两个管道，谁先接收到值先打印谁
-	var hasVal bool = false
+	//var hasVal bool = false
+
+	var values []int
 	n := 0
 	for {
 		// active每次需要初始化
 
 		var active chan int
-		if hasVal {
+		var activeValue int
+		//if hasVal {
+		//	active = work
+		//}
+		if len(values) > 0 {
+			activeValue = values[0]
 			active = work
 		}
+
 		/**
 		 * 前两个case用来发送数据，第三个case用来接收数据
 		 * 如果发送的过快，消耗的过慢，会打印不出来, 为了解决这个问题，需要建立一个存储，来存储没有打印的值
@@ -27,16 +35,20 @@ func main() {
 		// 如果没有default, 只有select case，在没有传入值的时候，会死锁
 		case n = <-c1:
 			fmt.Println("c1", n)
-			hasVal = true
+			values = append(values, n)
+			//hasVal = true
 			//work <- n
 
 		case n = <-c2:
 			fmt.Println("c2", n)
-			hasVal = true
+			values = append(values, n)
+			//hasVal = true
 			//work <- n
-		case active <- n: // 增加这行的意义：防止worker阻塞等待，但是n设置了初始值，会一直走着，利用变量来控制开关
-			hasVal = false
-
+			//		case active <- n: // 增加这行的意义：防止worker阻塞等待，但是n设置了初始值，会一直走着，利用变量来控制开关
+			//			hasVal = false
+		case active <- activeValue:
+			//hasVal = true
+			values = values[1:] // 去除第一个value
 		default:
 			// 非阻塞式的获取channel，如果channel还没值，会走这，即使channel刚建立，还没有传入值，如果外部套for  这里会死循环
 			fmt.Println("no")
