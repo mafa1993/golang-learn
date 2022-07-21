@@ -16,6 +16,9 @@ func main() {
 	n := 0
 	//十秒后会向tm中发送一个数
 	tm := time.After(10 * time.Second)
+
+	// 定时任务, 每隔一段时间向chan中发一个值
+	tick := time.Tick(time.Second)
 	for {
 		// active每次需要初始化
 
@@ -51,15 +54,17 @@ func main() {
 		case active <- activeValue:
 			//hasVal = true
 			values = values[1:] // 去除第一个value
-		case <-tm:// 模拟10s后结束
+		case <-tm: // 模拟10s后结束
 			fmt.Println("end")
 			return
-		case  <- time.After(800*time.Millisecond):  // 如果两次生成数据相差了超过800毫秒，每次进入
+		case <-time.After(800 * time.Millisecond): // 如果两次生成数据相差了超过800毫秒，其他case能执行的时候，这个不会被执行
 			fmt.Println("timeout")
-		//default:
+		case <-tick: // 每秒查看队列长度
+			fmt.Println("队列长度", len(values))
+			//default:
 			// 非阻塞式的获取channel，如果channel还没值，会走这，即使channel刚建立，还没有传入值，如果外部套for  这里会死循环
-		//	fmt.Println("no")
-		//	time.Sleep(time.Second)
+			//	fmt.Println("no")
+			//	time.Sleep(time.Second)
 		}
 	}
 }
