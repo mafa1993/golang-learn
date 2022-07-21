@@ -14,6 +14,8 @@ func main() {
 
 	var values []int
 	n := 0
+	//十秒后会向tm中发送一个数
+	tm := time.After(10 * time.Second)
 	for {
 		// active每次需要初始化
 
@@ -49,10 +51,15 @@ func main() {
 		case active <- activeValue:
 			//hasVal = true
 			values = values[1:] // 去除第一个value
-		default:
+		case <-tm:// 模拟10s后结束
+			fmt.Println("end")
+			return
+		case  <- time.After(800*time.Millisecond):  // 如果两次生成数据相差了超过800毫秒，每次进入
+			fmt.Println("timeout")
+		//default:
 			// 非阻塞式的获取channel，如果channel还没值，会走这，即使channel刚建立，还没有传入值，如果外部套for  这里会死循环
-			fmt.Println("no")
-			time.Sleep(time.Second)
+		//	fmt.Println("no")
+		//	time.Sleep(time.Second)
 		}
 	}
 }
