@@ -61,7 +61,7 @@ func (myNode *myTree) fore() {
 	}
 	right := myTree{myNode.node.Right} // 类型转换为myTree，不软不能调用fore
 	left := myTree{myNode.node.Left}
-	right.fore()
+	right.fore()  // 包一层进行循环
 	left.fore()
 	myNode.node.Print()
 }
