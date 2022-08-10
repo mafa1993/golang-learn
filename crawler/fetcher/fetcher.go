@@ -3,10 +3,10 @@ package fetcher
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/httputil"
 
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding"
@@ -16,23 +16,29 @@ import (
 
 // 发送请求的方法，返回获取的内容和error
 func Fetch(url string) ([]byte, error) {
+	log.Printf("获取的连接%s", url)
 	// 三种实现error的方法  1. errors.New  2. fmt.Errorf() 3. 自己实现error的接口
-	resp, err := http.Get("http://www.zhenai.com/zhenghun")
+	resp, err := http.Get(url)
 	defer resp.Body.Close()
 
 	if err != nil {
 		return nil, err
 	}
-
+	rlt, _ := httputil.DumpResponse(resp, true)
+	fmt.Printf("%s", rlt)
 	// 200状态码
 	if resp.StatusCode != http.StatusOK {
+
 		log.Printf("请求出错，链接为%s, http code为%d", url, resp.StatusCode)
 		return nil, fmt.Errorf("请求出错，httpcode 为%d", resp.StatusCode)
 	}
 
 	//all, err := ioutil.ReadAll(resp.Body) // read了以后就到了结尾，不能再进行操作
-	e := judgeEncoding(resp.Body)
-	utf8_reader := transform.NewReader(resp.Body, e.NewDecoder()) // gbk 转成utf-8 NewDecoder() 用什么编码作为解码
+	content := bufio.NewReader(resp.Body) // 先复制一份再传递  不然peek会改变原始数据
+	// 疑问，这里content不就变成4096个字节，为什么后面从它ReadAll是没问题的
+
+	e := judgeEncoding(content)
+	utf8_reader := transform.NewReader(content, e.NewDecoder()) // gbk 转成utf-8 NewDecoder() 用什么编码作为解码
 	all, err := ioutil.ReadAll(utf8_reader)
 
 	if err != nil {
@@ -45,8 +51,9 @@ func Fetch(url string) ([]byte, error) {
 /**
 判断编码
 */
-func judgeEncoding(r io.Reader) encoding.Encoding {
-	bytes, err := bufio.NewReader(r).Peek(1024) // 从r上创建一个新的reader，并且只取前1024个字符，如果不这样做，一个reader被读取以后，不能再被读取，会导致缺失前1024个字节
+func judgeEncoding(r *bufio.Reader) encoding.Encoding {
+	bytes, err := r.Peek(1024) // 从r上创建一个新的reader，并且只取前1024个字符，如果不这样做，一个reader被读取以后，不能再被读取，会导致缺失前1024个字节
+
 	if err != nil {
 		return unicode.UTF8
 	}

@@ -1,5 +1,6 @@
 package engine
 
+// 主任务，队列调度
 import (
 	"crawler/fetcher"
 	"log"
@@ -31,7 +32,9 @@ func Run(seeds ...Request) { // ...用于接收多个参数，合并成一个sli
 		Requests = append(Requests, rlt.Requests...)
 
 		// item暂时打印
-		log.Printf("获取到的itme为%s", rlt.Item)
+		for _, v := range rlt.Item {
+			log.Printf("获取到的itme为%s", v)
+		}
 
 	}
 }

@@ -1,5 +1,7 @@
 package engine
 
+// 定义结构体
+
 // 发送请求的结构体，url为请求的连接，parser 为返回内容调用的回调函数
 type Request struct {
 	Url        string
@@ -12,7 +14,7 @@ type ParseResult struct {
 	Item     []interface{}
 }
 
-// 空解析方法
+// 空解析方法，用于测试，某些parser还没完成的时候 后续会不在用
 func NilParseFunc(body []byte) ParseResult {
 	return ParseResult{}
 }

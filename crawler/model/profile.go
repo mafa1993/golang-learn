@@ -4,9 +4,9 @@ type Profile struct {
 	Id         string
 	Name       string
 	Gender     string   // 职业
-	Age        int      // 年龄
-	Height     int      // 身高
-	Weight     int      // 体重
+	Age        string      // 年龄
+	Height     string      // 身高
+	Weight     string      // 体重
 	Income     string   // 收入
 	Marriage   string   // 是否已婚
 	Education  string   // 是否已婚
