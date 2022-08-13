@@ -24,9 +24,10 @@ func (simple SimpleEngine) Run(seeds ...Request) { // ...用于接收多个参�
 		Requests = Requests[1:]
 		log.Printf("%s", Request.Url)
 
-		rlt, err := SimpleEngine.Worker(Request)
+		rlt, err := simple.Worker(Request)
 		if err != nil {
 			fmt.Errorf("%s", err)
+			continue
 		}
 
 		// 将新解析出来的Request对象放入队列
@@ -40,13 +41,13 @@ func (simple SimpleEngine) Run(seeds ...Request) { // ...用于接收多个参�
 	}
 }
 
-func (sim SimpleEngine) Worker(Request Request) (ParseResult, error) {
-	body, err := fetcher.Fetch(Request.Url)
+func (sim SimpleEngine) Worker(request Request) (ParseResult, error) {
+	body, err := fetcher.Fetch(request.Url)
 	if err != nil {
 		log.Printf("fetch 出错，msg %s", err)
 		return ParseResult{}, err
 	}
-	rlt := Request.ParserFunc(body)
+	rlt := request.ParserFunc(body)
 
 	return rlt, nil
 }
