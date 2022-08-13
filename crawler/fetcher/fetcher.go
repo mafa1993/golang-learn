@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/http/httputil"
 
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding"
@@ -18,14 +17,17 @@ import (
 func Fetch(url string) ([]byte, error) {
 	log.Printf("获取的连接%s", url)
 	// 三种实现error的方法  1. errors.New  2. fmt.Errorf() 3. 自己实现error的接口
-	resp, err := http.Get(url)
-	defer resp.Body.Close()
+	//resp, err := http.Get(url)
+	request, _ := http.NewRequest("GET", url, nil)
+	request.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:103.0) Gecko/20100101 Firefox/103.0")
+	client := &http.Client{}
+	resp, err := client.Do(request)
 
 	if err != nil {
 		return nil, err
 	}
-	rlt, _ := httputil.DumpResponse(resp, true)
-	fmt.Printf("%s", rlt)
+	defer resp.Body.Close()
+
 	// 200状态码
 	if resp.StatusCode != http.StatusOK {
 
