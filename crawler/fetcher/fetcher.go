@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding"
@@ -13,8 +14,12 @@ import (
 	"golang.org/x/text/transform"
 )
 
+// 增加速率限制
+var rateLimite = time.Tick(100 * time.Millisecond)
+
 // 发送请求的方法，返回获取的内容和error
 func Fetch(url string) ([]byte, error) {
+	<-rateLimite // fetch 争抢rateLimite管道，形成速率限制
 	log.Printf("获取的连接%s", url)
 	//todo 接口请求有频率限制，暂时无解。
 	// 三种实现error的方法  1. errors.New  2. fmt.Errorf() 3. 自己实现error的接口
