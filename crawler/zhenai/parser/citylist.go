@@ -19,7 +19,7 @@ func CityListParser(content []byte) engine.ParseResult {
 	//rex := regexp.MustCompile(`<a[ a-z_A-Z0-9\-]+?href="([a-zA-Z0-9]+)"[^>]+>([^<]+)<`) // [^>]> 这个实现了非贪婪匹配
 	rex := regexp.MustCompile(regx) // 应该为470个  494的话，下面有几个推荐城市重复
 	matchs := rex.FindAllSubmatch(content, -1)
-	var i int = 0
+	//var i int = 0
 	for _, v := range matchs {
 		//name := string(v[2])  //v其实为引用，直接使用v[2],在parserfunc 执行的时候，name为同一个
 
@@ -31,10 +31,10 @@ func CityListParser(content []byte) engine.ParseResult {
 			ParserFunc: CityParser,
 		})
 		rlt.Item = append(rlt.Item, v[2]) // 将城市名放到item中
-		i++
-		if i > 0 {
-			break
-		}
+		// i++
+		// if i > 0 {
+		// 	break
+		// }
 	}
 
 	return rlt

@@ -16,6 +16,7 @@ import (
 // 发送请求的方法，返回获取的内容和error
 func Fetch(url string) ([]byte, error) {
 	log.Printf("获取的连接%s", url)
+	//todo 接口请求有频率限制，暂时无解。
 	// 三种实现error的方法  1. errors.New  2. fmt.Errorf() 3. 自己实现error的接口
 	//resp, err := http.Get(url)
 	request, _ := http.NewRequest("GET", url, nil)
