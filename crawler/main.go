@@ -15,5 +15,6 @@ func main() {
 		},
 	}
 
-	engine.Run(seeds...)
+	//engine.Run(seeds...)
+	engine.SimpleEngine{}.Run(seeds...)
 }

@@ -3,11 +3,14 @@ package engine
 // 主任务，队列调度
 import (
 	"crawler/fetcher"
+	"fmt"
 	"log"
 )
 
+type SimpleEngine struct{}
+
 // 传入多个Request，进行调度
-func Run(seeds ...Request) { // ...用于接收多个参数，合并成一个slice
+func (simple SimpleEngine) Run(seeds ...Request) { // ...用于接收多个参数，合并成一个slice
 	var Requests []Request // 建立一个队列，将所有请求放入
 
 	Requests = append(Requests, seeds...) // 这里... 为展开 传多个参数
@@ -20,12 +23,11 @@ func Run(seeds ...Request) { // ...用于接收多个参数，合并成一个sli
 		Request := Requests[0] // 取出每一个Request进行消费
 		Requests = Requests[1:]
 		log.Printf("%s", Request.Url)
-		body, err := fetcher.Fetch(Request.Url)
+
+		rlt, err := SimpleEngine.Worker(Request)
 		if err != nil {
-			log.Printf("fetch 出错，msg %s", err)
-			continue // 出错进行下个
+			fmt.Errorf("%s", err)
 		}
-		rlt := Request.ParserFunc(body)
 
 		// 将新解析出来的Request对象放入队列
 		Requests = append(Requests, rlt.Requests...)
@@ -36,4 +38,15 @@ func Run(seeds ...Request) { // ...用于接收多个参数，合并成一个sli
 		}
 
 	}
+}
+
+func (sim SimpleEngine) Worker(Request Request) (ParseResult, error) {
+	body, err := fetcher.Fetch(Request.Url)
+	if err != nil {
+		log.Printf("fetch 出错，msg %s", err)
+		return ParseResult{}, err
+	}
+	rlt := Request.ParserFunc(body)
+
+	return rlt, nil
 }
