@@ -21,7 +21,6 @@ func Run(seeds ...Request) { // ...用于接收多个参数，合并成一个sli
 		Requests = Requests[1:]
 		log.Printf("%s", Request.Url)
 		body, err := fetcher.Fetch(Request.Url)
-
 		if err != nil {
 			log.Printf("fetch 出错，msg %s", err)
 			continue // 出错进行下个
