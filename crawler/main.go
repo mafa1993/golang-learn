@@ -18,8 +18,12 @@ func main() {
 
 	//engine.Run(seeds...)
 	//engine.SimpleEngine{}.Run(seeds...)  // 单任务执行
+	// e := engine.ConcurrentEngine{
+	// 	Scheduler:   &scheduler.SimpleScheduler{},
+	// 	WorkerCount: 10,
+	// }
 	e := engine.ConcurrentEngine{
-		Scheduler:   &scheduler.SimpleScheduler{},
+		Scheduler:   &scheduler.QueuedScheduler{},
 		WorkerCount: 10,
 	}
 	e.Run(seeds...)

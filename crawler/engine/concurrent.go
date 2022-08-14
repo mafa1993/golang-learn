@@ -15,18 +15,19 @@ type ConcurrentEngine struct {
 type Scheduler interface {
 	Submit(Request) // 提交任务到调度器，
 	ConfigChan(chan Request)
+	WorkerReady(chan Request)
+	Run()
 }
 
 func (e ConcurrentEngine) Run(seed ...Request) {
+
+	e.Scheduler.Run()
 	for _, v := range seed {
 		e.Scheduler.Submit(v)
 	}
-
-	in := make(chan Request) // 发送任务
-	e.Scheduler.ConfigChan(in)
 	out := make(chan ParseResult) // 接收任务的返回结果
 	for i := 0; i < e.WorkerCount; i++ {
-		e.createWorker(in, out)
+		e.createWorker(out, e.Scheduler)
 	}
 
 	for {
@@ -41,9 +42,12 @@ func (e ConcurrentEngine) Run(seed ...Request) {
 	}
 }
 
-func (e ConcurrentEngine) createWorker(in chan Request, out chan ParseResult) {
+func (e ConcurrentEngine) createWorker(out chan ParseResult, s Scheduler) {
+	in := make(chan Request)
 	go func() {
 		for { // 保证循环取数据
+			// 先告诉scheduler worker空出来了，再去收数据
+			s.WorkerReady(in)
 			Request := <-in
 			rlt, _ := e.Worker(Request)
 			out <- rlt
