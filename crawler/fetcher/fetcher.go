@@ -14,7 +14,7 @@ import (
 	"golang.org/x/text/transform"
 )
 
-// 增加速率限制
+// 增加速率限制，这是个异步的
 var rateLimite = time.Tick(100 * time.Millisecond)
 
 // 发送请求的方法，返回获取的内容和error

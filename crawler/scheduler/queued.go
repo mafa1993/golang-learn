@@ -11,8 +11,8 @@ func (s *QueuedScheduler) Submit(r engine.Request) {
 	s.requestChan <- r
 }
 
-func (sim *QueuedScheduler) ConfigChan(in chan engine.Request) {
-
+func (sim *QueuedScheduler) ConfigChan() chan engine.Request {
+	return make(chan engine.Request)
 }
 
 // 告知scheduler Woker已经准备好

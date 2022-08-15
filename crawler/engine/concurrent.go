@@ -14,9 +14,14 @@ type ConcurrentEngine struct {
 // 定义scheduler接口
 type Scheduler interface {
 	Submit(Request) // 提交任务到调度器，
-	ConfigChan(chan Request)
-	WorkerReady(chan Request)
+	ConfigChan() chan Request
 	Run()
+	ReadyNotifier
+}
+
+// 将ready单独出来，在只需调用ready的地方，不需要传整个scheduler，传ReadyNotifier即可
+type ReadyNotifier interface {
+	WorkerReady(chan Request)
 }
 
 func (e ConcurrentEngine) Run(seed ...Request) {
@@ -27,7 +32,10 @@ func (e ConcurrentEngine) Run(seed ...Request) {
 	}
 	out := make(chan ParseResult) // 接收任务的返回结果
 	for i := 0; i < e.WorkerCount; i++ {
-		e.createWorker(out, e.Scheduler)
+		// 多调度器适配，是走队列模式的scheduler还是抢占式的scheduler去询问scheduler
+		// 队列模式的，每个woker有自己的chan
+		// 抢占式的 共用一个chan
+		e.createWorker(e.Scheduler.ConfigChan(), out, e.Scheduler)
 	}
 
 	for {
@@ -42,8 +50,9 @@ func (e ConcurrentEngine) Run(seed ...Request) {
 	}
 }
 
-func (e ConcurrentEngine) createWorker(out chan ParseResult, s Scheduler) {
-	in := make(chan Request)
+// 这里用Readynotifier只接受Scheduler的一部分
+func (e ConcurrentEngine) createWorker(in chan Request, out chan ParseResult, s ReadyNotifier) {
+
 	go func() {
 		for { // 保证循环取数据
 			// 先告诉scheduler worker空出来了，再去收数据

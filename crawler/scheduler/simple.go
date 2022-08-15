@@ -13,6 +13,12 @@ func (sim *SimpleScheduler) Submit(r engine.Request) {
 	}()
 }
 
-func (sim *SimpleScheduler) ConfigChan(in chan engine.Request) {
-	sim.in = in
+func (sim *SimpleScheduler) ConfigChan() chan engine.Request {
+	return sim.in
 }
+
+func (sim *SimpleScheduler) Run() {
+	sim.in = make(chan engine.Request)
+}
+
+func (sim *SimpleScheduler) WorkerReady() {}
