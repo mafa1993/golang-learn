@@ -5,10 +5,12 @@ import (
 	"regexp"
 )
 
-var cityRe *regexp.Regexp = regexp.MustCompile(`"http://album.zhenai.com/u/([0-9]+)"`)
+var profileRe *regexp.Regexp = regexp.MustCompile(`"http://album.zhenai.com/u/([0-9]+)"`)
+// 下一页
+var cityUrlRe = regexp.MustCompile(`href="(http://www.zhenai.com/zhenghun/[^"]+)`)
 
 func CityParser(content []byte) engine.ParseResult {
-	rlt := cityRe.FindAllSubmatch(content, -1)
+	rlt := profileRe.FindAllSubmatch(content, -1)
 	var rtn engine.ParseResult
 	for _, v := range rlt {
 		rtn.Item = append(rtn.Item, v[1])
@@ -18,6 +20,16 @@ func CityParser(content []byte) engine.ParseResult {
 			ParserFunc: func(content []byte) engine.ParseResult { // content会在使用的时候传进去，参数二线传进去
 				return ParseProfile(content, string(v[1]))
 			},
+		})
+	}
+
+	rlt = cityUrlRe.FindAllSubmatch(content,-1)
+	for _,v := range rlt {
+		rtn.Item = append(rtn.Item, v[1])
+		rtn.Requests = append(rtn.Requests, engine.Request{
+			Url: string(v[1]),
+			//Url:string(v[1]),
+			ParserFunc:CityParser,
 		})
 	}
 	return rtn
