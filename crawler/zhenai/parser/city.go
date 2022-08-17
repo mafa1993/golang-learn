@@ -22,7 +22,7 @@ func CityParser(content []byte) engine.ParseResult {
 			},
 		})
 	}
-
+	// fixme 每个页会多获取3遍
 	rlt = cityUrlRe.FindAllSubmatch(content,-1)
 	for _,v := range rlt {
 		rtn.Item = append(rtn.Item, v[1])

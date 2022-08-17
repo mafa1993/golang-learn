@@ -2,13 +2,13 @@ package engine
 
 import (
 	"crawler/fetcher"
-	"fmt"
 	"log"
 )
 
 type ConcurrentEngine struct {
-	Scheduler   Scheduler // 调度器
-	WorkerCount int       // 进程数
+	Scheduler   Scheduler        // 调度器
+	WorkerCount int              // 进程数
+	ItemChan    chan interface{} // 用于接收item信息，进行分发存储
 }
 
 // 定义scheduler接口
@@ -41,7 +41,8 @@ func (e ConcurrentEngine) Run(seed ...Request) {
 	for {
 		result := <-out
 		for _, item := range result.Item {
-			fmt.Println(item)
+			// log.Printf("item 为%s", item)
+			go func(item interface{}) { e.ItemChan <- item }(item)
 		}
 
 		for _, request := range result.Requests {
