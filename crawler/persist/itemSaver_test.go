@@ -1,8 +1,12 @@
 package persist
 
 import (
+	"context"
 	"crawler/model"
+	"encoding/json"
 	"testing"
+
+	"gopkg.in/olivere/elastic.v5"
 )
 
 func TestSave(t *testing.T) {
@@ -25,5 +29,26 @@ func TestSave(t *testing.T) {
 		Photos:     []string{"safs/safd/asdf.png"}, // 照片
 		Commit:     "",                             // 备注
 	}
-	Save(data)
+	id, err := Save(data)
+	if err != nil {
+		panic(err)
+	}
+	client, err := elastic.NewClient(elastic.SetSniff(false))
+	if err != nil {
+		panic(err)
+	}
+	// 从es中获取数据，查看数据是否一致
+	resp, err := client.Get().Index("zhenai").Type("doc").Id(id).Do(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	var data_de model.Profile
+	err = json.Unmarshal(*resp.Source, &data_de)
+	if err != nil {
+		panic(err)
+	}
+	t.Logf("%v", data_de)
+	if data == data_de {
+		t.Errorf("%v,%v", data, data_de)
+	}
 }
