@@ -2,13 +2,15 @@ package persist
 
 import (
 	"context"
+	"crawler/engine"
+	"errors"
 	"log"
 
 	"gopkg.in/olivere/elastic.v5"
 )
 
-func ItemSave() chan interface{} {
-	out := make(chan interface{})
+func ItemSave() chan engine.Item {
+	out := make(chan engine.Item)
 
 	go func() {
 		itemCount := 0
@@ -27,14 +29,20 @@ func ItemSave() chan interface{} {
  * @param item interface{}  json 数据，存入到es
  * @return id，error  存入到es的id和 此函数运行过程中的报错
  */
-func Save(item interface{}) (id string, err error) {
+func Save(item engine.Item) (id string, err error) {
 	// 创建tcp客户端，不进行集群状态检查
 	client, err := elastic.NewClient(elastic.SetSniff(false))
 	if err != nil {
 		return "", err
 	}
 
-	resp, err := client.Index().Index("zhenai").Type("doc").BodyJson(item).Do(context.Background())
+	// 容错处理
+	if item.Id == "" {
+		return "", errors.New("id不能为空")
+	}
+
+	// 自己指定id录入
+	resp, err := client.Index().Index("zhenai").Type("doc").Id(item.Id).BodyJson(item).Do(context.Background())
 	if err != nil {
 		return "", err
 	}

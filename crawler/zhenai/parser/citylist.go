@@ -30,7 +30,11 @@ func CityListParser(content []byte) engine.ParseResult {
 			//ParserFunc: func(c []byte) engine.ParseResult { return ParseProfile(c, string(v[2])) },
 			ParserFunc: CityParser,
 		})
-		rlt.Item = append(rlt.Item, v[2]) // 将城市名放到item中
+		rlt.Item = append(rlt.Item, engine.Item{
+			Id:      "citylist",
+			Url:     "citylist",
+			Payload: v[2],
+		}) // 将城市名放到item中
 		// i++
 		// if i > 0 {
 		// 	break

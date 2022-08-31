@@ -2,6 +2,7 @@ package persist
 
 import (
 	"context"
+	"crawler/engine"
 	"crawler/model"
 	"encoding/json"
 	"testing"
@@ -29,7 +30,11 @@ func TestSave(t *testing.T) {
 		Photos:     []string{"safs/safd/asdf.png"}, // 照片
 		Commit:     "",                             // 备注
 	}
-	id, err := Save(data)
+	id, err := Save(engine.Item{
+		Id:      "1",
+		Url:     "1",
+		Payload: data,
+	})
 	if err != nil {
 		panic(err)
 	}

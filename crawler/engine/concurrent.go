@@ -6,9 +6,9 @@ import (
 )
 
 type ConcurrentEngine struct {
-	Scheduler   Scheduler        // 调度器
-	WorkerCount int              // 进程数
-	ItemChan    chan interface{} // 用于接收item信息，进行分发存储
+	Scheduler   Scheduler // 调度器
+	WorkerCount int       // 进程数
+	ItemChan    chan Item // 用于接收item信息，进行分发存储
 }
 
 // 定义scheduler接口
@@ -42,7 +42,7 @@ func (e ConcurrentEngine) Run(seed ...Request) {
 		result := <-out
 		for _, item := range result.Item {
 			// log.Printf("item 为%s", item)
-			go func(item interface{}) { e.ItemChan <- item }(item)
+			go func(item Item) { e.ItemChan <- item }(item)
 		}
 
 		for _, request := range result.Requests {

@@ -61,8 +61,15 @@ func ParseProfile(content []byte, id string) engine.ParseResult {
 	}
 
 	result := engine.ParseResult{
-		Item: []interface{}{
-			rtn,
+		// Item: []interface{}{
+		// 	rtn,
+		// },
+		Item: []engine.Item{
+			{
+				Url:     fmt.Sprintf("https://album.zhenai.com/u/%s", id),
+				Payload: rtn,
+				Id:      id,
+			},
 		},
 	}
 	return result
