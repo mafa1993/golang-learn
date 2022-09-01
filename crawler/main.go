@@ -23,10 +23,14 @@ func main() {
 	// 	Scheduler:   &scheduler.SimpleScheduler{},
 	// 	WorkerCount: 10,
 	// }
+	itemchan, err := persist.ItemSave()
+	if err != nil {
+		panic(err)
+	}
 	e := engine.ConcurrentEngine{
 		Scheduler:   &scheduler.QueuedScheduler{},
 		WorkerCount: 10,
-		ItemChan:    persist.ItemSave(), // 相当于create Worker，会生成消费者，阻塞等待item传入
+		ItemChan:    itemchan, // 相当于create Worker，会生成消费者，阻塞等待item传入
 	}
 	e.Run(seeds...)
 }

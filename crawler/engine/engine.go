@@ -2,7 +2,6 @@ package engine
 
 // 主任务，队列调度
 import (
-	"crawler/fetcher"
 	"fmt"
 	"log"
 )
@@ -39,15 +38,4 @@ func (simple SimpleEngine) Run(seeds ...Request) { // ...用于接收多个参�
 		}
 
 	}
-}
-
-func (sim SimpleEngine) Worker(request Request) (ParseResult, error) {
-	body, err := fetcher.Fetch(request.Url)
-	if err != nil {
-		log.Printf("fetch 出错，msg %s", err)
-		return ParseResult{}, err
-	}
-	rlt := request.ParserFunc(body)
-
-	return rlt, nil
 }

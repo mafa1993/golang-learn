@@ -9,8 +9,14 @@ import (
 	"gopkg.in/olivere/elastic.v5"
 )
 
-func ItemSave() chan engine.Item {
+func ItemSave() (chan engine.Item, error) {
 	out := make(chan engine.Item)
+
+	// 创建tcp客户端，不进行集群状态检查
+	client, err := elastic.NewClient(elastic.SetSniff(false))
+	if err != nil {
+		return nil, err
+	}
 
 	go func() {
 		itemCount := 0
@@ -18,10 +24,10 @@ func ItemSave() chan engine.Item {
 			item := <-out
 			itemCount++
 			log.Printf("item saver:got item #%d: %v", itemCount, item)
-			Save(item)
+			Save(client, item)
 		}
 	}()
-	return out
+	return out, nil
 }
 
 // 信息存入到es
@@ -29,12 +35,7 @@ func ItemSave() chan engine.Item {
  * @param item interface{}  json 数据，存入到es
  * @return id，error  存入到es的id和 此函数运行过程中的报错
  */
-func Save(item engine.Item) (id string, err error) {
-	// 创建tcp客户端，不进行集群状态检查
-	client, err := elastic.NewClient(elastic.SetSniff(false))
-	if err != nil {
-		return "", err
-	}
+func Save(client *elastic.Client, item engine.Item) (id string, err error) {
 
 	// 容错处理
 	if item.Id == "" {
