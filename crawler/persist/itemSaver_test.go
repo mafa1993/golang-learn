@@ -30,7 +30,8 @@ func TestSave(t *testing.T) {
 		Photos:     []string{"safs/safd/asdf.png"}, // 照片
 		Commit:     "",                             // 备注
 	}
-	id, err := Save(engine.Item{
+	client, _ := elastic.NewClient(elastic.SetSniff(false))
+	id, err := Save(client, engine.Item{
 		Id:      "1",
 		Url:     "1",
 		Payload: data,
@@ -38,7 +39,7 @@ func TestSave(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	client, err := elastic.NewClient(elastic.SetSniff(false))
+
 	if err != nil {
 		panic(err)
 	}
@@ -53,7 +54,5 @@ func TestSave(t *testing.T) {
 		panic(err)
 	}
 	t.Logf("%v", data_de)
-	if data == data_de {
-		t.Errorf("%v,%v", data, data_de)
-	}
+
 }
