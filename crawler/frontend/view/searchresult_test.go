@@ -10,7 +10,7 @@ import (
 	"frontend/model"
 )
 
-func TestTemplate(t *testing.T) {
+func TestSearch(t *testing.T) {
 	template := template.Must(template.ParseFiles("template.html")) // template.Must 对errorjinxing panic
 
 	// 两个参数  一返回的数据存放，二 需要解析的数据
