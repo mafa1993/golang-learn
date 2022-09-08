@@ -2,9 +2,9 @@ package main
 
 import (
 	"crawler/engine"
-	"crawler/persist"
 	"crawler/scheduler"
 	"crawler/zhenai/parser"
+	//disp "crawler_dis/persist"
 )
 
 func main() {
@@ -23,7 +23,8 @@ func main() {
 	// 	Scheduler:   &scheduler.SimpleScheduler{},
 	// 	WorkerCount: 10,
 	// }
-	itemchan, err := persist.ItemSave()
+	itemchan, err := persist.ItemSave(":1234")
+	//itemchan, err := disp.ItemSave(":1234")
 	if err != nil {
 		panic(err)
 	}
