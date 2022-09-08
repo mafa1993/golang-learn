@@ -2,14 +2,14 @@ package main
 
 import (
 	"crawler_dis/persist"
-	rpcc "crawler_dis/rpc"
+	"rpcc"
 
 	"gopkg.in/olivere/elastic.v5"
 )
 
 func main() {
 
-	err:=serverRpc(":1234")
+	err := serverRpc(":1234")
 	if err != nil {
 		panic(err)
 	}

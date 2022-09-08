@@ -3,7 +3,7 @@ package main
 import (
 	"crawler/engine"
 	"crawler/model"
-	rpcc "crawler_dis/rpc"
+	"rpcc"
 	"testing"
 	"time"
 )
@@ -15,7 +15,6 @@ func TestClient(t *testing.T) {
 
 	// 初始化客户端
 	client, _ := rpcc.NewClient(":1234")
-	
 
 	data := model.Profile{
 		Id:         "123456",
