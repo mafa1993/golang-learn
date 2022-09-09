@@ -28,7 +28,8 @@ func CityListParser(content []byte) engine.ParseResult {
 			Url: string(v[1]),
 			//ParserFunc: engine.NilParseFunc, // 暂时使用Nilparser代替
 			//ParserFunc: func(c []byte) engine.ParseResult { return ParseProfile(c, string(v[2])) },
-			ParserFunc: CityParser,
+			//ParserFunc: CityParser,
+			Parser: engine.CreateFuncParserFunc(CityParser,"CityParser"),
 		})
 		rlt.Item = append(rlt.Item, engine.Item{
 			Id:      "citylist",

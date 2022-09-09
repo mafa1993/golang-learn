@@ -17,7 +17,11 @@ type Scheduler interface {
 	ConfigChan() chan Request
 	Run()
 	ReadyNotifier
+	RequestProcessor Processor
 }
+
+type Processor func(Request) ParserResult{}
+
 
 // 将ready单独出来，在只需调用ready的地方，不需要传整个scheduler，传ReadyNotifier即可
 type ReadyNotifier interface {
@@ -59,7 +63,9 @@ func (e ConcurrentEngine) createWorker(in chan Request, out chan ParseResult, s 
 			// 先告诉scheduler worker空出来了，再去收数据
 			s.WorkerReady(in)
 			Request := <-in
-			rlt, _ := e.Worker(Request)
+			rlt, _ := e.RequestProcessor(Request)
+			// call rpc 
+
 			out <- rlt
 		}
 	}()
@@ -71,7 +77,8 @@ func (e ConcurrentEngine) Worker(request Request) (ParseResult, error) {
 		log.Printf("fetch 出错，msg %s", err)
 		return ParseResult{}, err
 	}
-	rlt := request.ParserFunc(body)
+	//	rlt := request.ParserFunc(body)
+	rlt := request.Parser.Parse(body)
 
 	return rlt, nil
 }

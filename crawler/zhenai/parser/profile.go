@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/bitly/go-simplejson"
+	"github.com/thehappymouse/ccmouse/crawler/engine"
 )
 
 func ParseProfile(content []byte, id string) engine.ParseResult {
@@ -71,7 +72,19 @@ func ParseProfile(content []byte, id string) engine.ParseResult {
 				Id:      id,
 			},
 		},
+		Requests: []engine.Request{
+			{
+				Parser: CreateProfileFunc(id),
+			},
+		},
 	}
+	// rlt.Requests = append(rlt.Requests, engine.Request{
+	// 	Url: string(v[1]),
+	// 	//ParserFunc: engine.NilParseFunc, // 暂时使用Nilparser代替
+	// 	//ParserFunc: func(c []byte) engine.ParseResult { return ParseProfile(c, string(v[2])) },
+	// 	//ParserFunc: CityParser,
+	// 	Parser: engine.CreateFuncParserFunc(CityParser,"CityParser"),
+	// })
 	return result
 }
 
@@ -132,3 +145,23 @@ func ParseProfile(content []byte, id string) engine.ParseResult {
 // 	}
 // 	return result
 // }
+
+// profile不通用，多一个参数，需要返回，单独建立
+type ProfileParser struct {
+	username string
+}
+
+// funcparser 实现interface
+func (f *ProfileParser) Parse(contents []byte) engine.ParseResult {
+	return ParseProfile(contents, f.username)
+}
+
+func (f *ProfileParser) Serialize() (name string, args interface{}) {
+	return "ParseProfile", f.username
+}
+
+func CreateProfileFunc(username string) *ParseProfile {
+	return &ParseProfile{
+		name: username,
+	}
+}

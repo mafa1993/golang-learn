@@ -6,7 +6,7 @@ package engine
 type Request struct {
 	Url string
 	//ParserFunc func([]byte) ParseResult
-	ParserFunc Parser
+	Parser Parser
 }
 
 // 请求结果的结构体，返回的结果，url需要再发送请求去获取内容  还有一些内容需要存放进去Item
@@ -32,8 +32,32 @@ type NilParseFunc struct{}
 func (n NilParseFunc) Parse() ParseResult {
 	return ParseResult{}
 }
+
 // 空解析方法，用于测试，某些parser还没完成的时候 后续会不在用
 // func NilParseFunc(body []byte) ParseResult {
 // 	return ParseResult{}
 // }
-	
+
+type FuncParser struct {
+	parser ParserFunc
+	name   string
+}
+
+// funcparser 实现interface
+func (f *FuncParser) Parse(contents []byte) ParseResult {
+	return f.parser(contents)
+}
+
+func (f *FuncParser) Serialize() (name string, args interface{}) {
+	return f.name, nil
+}
+
+//工厂模式 创建
+func CreateFuncParserFunc(p *ParserFunc, name string) *FuncParser {
+	return &FuncParser{
+		parser: *p,
+		name:   name,
+	}
+}
+
+type ParserFunc func(contents []byte) ParseResult

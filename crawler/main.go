@@ -4,6 +4,8 @@ import (
 	"crawler/engine"
 	"crawler/scheduler"
 	"crawler/zhenai/parser"
+
+	"github.com/thehappymouse/ccmouse/crawler/engine"
 	//disp "crawler_dis/persist"
 )
 
@@ -13,7 +15,8 @@ func main() {
 	seeds = []engine.Request{
 		{
 			Url:        "http://www.zhenai.com/zhenghun",
-			ParserFunc: parser.CityListParser,
+			//ParserFunc: parser.CityListParser,
+			Parser:engine.CreateFuncParserFunc(parser.CityListParser,"CityListParser"),
 		},
 	}
 
@@ -32,6 +35,7 @@ func main() {
 		Scheduler:   &scheduler.QueuedScheduler{},
 		WorkerCount: 10,
 		ItemChan:    itemchan, // 相当于create Worker，会生成消费者，阻塞等待item传入
+		RequestProcessor:engine.Worker,
 	}
 	e.Run(seeds...)
 }
