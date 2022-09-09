@@ -4,4 +4,7 @@ package config
 const (
 	ItemServerPort = 1234
 	ItemServerRpc  = "ItemSaveServer.Save"
+
+	WorkerPort0     = 10086
+	CrawlServiceRpc = "CrawlService.Process"
 )
